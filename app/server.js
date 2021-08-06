@@ -7,6 +7,13 @@ var corsOptions = {
   origin: "http://localhost:8081"
 };
 
+const es6Renderer = require('express-es6-template-engine');
+app.engine('html', es6Renderer);
+app.set('views', 'templates');
+app.set('view engine', 'html');
+
+app.use(express.static('public'));
+
 app.use(cors(corsOptions));
 
 // parse requests of content-type - application/json
@@ -42,7 +49,7 @@ function initial() {
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to NOTRussia." });
+  res.render('main');
 });
 
 // routes
