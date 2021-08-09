@@ -6,8 +6,9 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
+const config = require("./config/auth.config");
 const app = express();
-
+const jwt = require("jsonwebtoken");
 var corsOptions = {
   origin: "http://localhost:8081"
 };
@@ -27,15 +28,16 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+app.use(passport.initialize());
 const db = require("./models");
 const Role = db.role;
-const client = require('./config/google.Oauth.js');
-console.log(client);
+const User = db.user;
+const RefreshToken = db.refreshToken;
 
 passport.use(new GoogleStrategy({
 	  clientID: "1011376484214-mv7mbq2n4cngg6p9lkvbfosoh49jc0pv.apps.googleusercontent.com",
 	  clientSecret: "PWrMsjFXVJIrW9JW8A4i7dUA",
-    callbackURL: "http://localhost:8080/api/auth/googleRedirect"
+    callbackURL: "https://dcproject0821.xyz/api/auth/googleRedirect"
   },
   function(accessToken, refreshToken, profile, done) {
       //console.log(accessToken, refreshToken, profile)
@@ -44,16 +46,16 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-app.get('/api/auth/google',  passport.authenticate('google', { scope: ['profile','email'] }));
-
 passport.serializeUser(function(user, done) {
-    console.log('I should have jack ')
+    console.log('serialize');
     done(null, user)
 })
 passport.deserializeUser(function(obj, done) {
-    console.log('I wont have jack shit')
+    console.log(deserialize);
     done(null, obj)
 })
+
+app.get('/api/auth/google',  passport.authenticate('google', { scope: ['profile','email'] }));
 
 app.get('/api/auth/googleRedirect', passport.authenticate('google'),(req, res)=>{
     console.log('redirected', req.user)
@@ -77,7 +79,7 @@ app.get('/api/auth/googleRedirect', passport.authenticate('google'),(req, res)=>
           password: null,
           provider: req.user.provider 
         })
-        res.status(200).send('User registered sucessfully').redirect('/api/auth/google');
+        res.status(200).redirect('https://dcproject0821.xyz/api/auth/google');
 
        }
 
