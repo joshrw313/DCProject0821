@@ -42,11 +42,20 @@ passport.use(new GoogleStrategy({
       console.log("GOOGLE BASED OAUTH VALIDATION GETTING CALLED")
       return done(null, profile)
   }
-))
+));
 
 app.get('/api/auth/google',  passport.authenticate('google', { scope: ['profile','email'] }));
 
-app.get('api/auth/googleRedirect', passport.authenticate('google'),(req, res)=>{
+passport.serializeUser(function(user, done) {
+    console.log('I should have jack ')
+    done(null, user)
+})
+passport.deserializeUser(function(obj, done) {
+    console.log('I wont have jack shit')
+    done(null, obj)
+})
+
+app.get('/api/auth/googleRedirect', passport.authenticate('google'),(req, res)=>{
     console.log('redirected', req.user)
     /*let user = {
         displayName: req.user.displayName,
