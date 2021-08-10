@@ -131,8 +131,8 @@ function initial() {
 app.get("/", (req, res) => {
   res.render('main');
 });
-app.get("/api/auth/signup", (req, res) => {
-  res.render("signup")
+app.get("/signup", (req, res) => {
+  res.render("signup");
 })
 
 // routes
