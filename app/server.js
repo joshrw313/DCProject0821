@@ -51,6 +51,9 @@ function initial() {
 app.get("/home", (req, res) => {
   res.render('main');
 });
+app.get("/api/auth/signup", (req, res) => {
+  res.render("signup")
+})
 
 // routes
 require('./routes/auth.routes')(app);
