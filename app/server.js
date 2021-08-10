@@ -34,9 +34,11 @@ const Role = db.role;
 const User = db.user;
 const RefreshToken = db.refreshToken;
 
+const googleKey = require("./config/google.Oauth");
+
 passport.use(new GoogleStrategy({
-	  clientID: "1011376484214-mv7mbq2n4cngg6p9lkvbfosoh49jc0pv.apps.googleusercontent.com",
-	  clientSecret: "PWrMsjFXVJIrW9JW8A4i7dUA",
+	  clientID: googleKey.clientId, 
+	  clientSecret: googleKey.clientSecret, 
     callbackURL: "https://dcproject0821.xyz/api/auth/googleRedirect"
   },
   function(accessToken, refreshToken, profile, done) {
