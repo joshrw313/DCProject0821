@@ -1,8 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-
-const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
+const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
@@ -19,6 +17,8 @@ app.set('views', 'templates');
 app.set('view engine', 'html');
 
 app.use(express.static('public'));
+
+app.use(cookieParser());
 
 app.use(cors(corsOptions));
 
@@ -81,7 +81,7 @@ app.get('/api/auth/googleRedirect', passport.authenticate('google'),(req, res)=>
           password: null,
           provider: req.user.provider 
         })
-        res.status(200).redirect('https://dcproject0821.xyz/api/auth/google');
+        res.redirect('https://dcproject0821.xyz/api/auth/google');
 
        }
 
@@ -91,13 +91,17 @@ app.get('/api/auth/googleRedirect', passport.authenticate('google'),(req, res)=>
 
       let refreshToken = await RefreshToken.createToken(user);
       
-        res.status(200).send({
+        
+        /*res.set({
           id: user.id,
           username: user.username,
           email: user.email,
           accessToken: token,
           refreshToken: refreshToken,
-        });
+        });*/
+        res.cookie('jwt', {'token':token,'refreshToken':refreshToken});
+        res.redirect('/api/test/user');
+        
       })
     .catch(err => {
       res.status(500).send({ message: err.message });
