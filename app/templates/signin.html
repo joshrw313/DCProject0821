@@ -8,23 +8,23 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <form action="api/auth/signin">
+    <form action="api/auth/signin" method="post">
     <div class="wrapper">
         <div class="loginForm">
             <div class="title">
                  Account Login
             </div>
             <div class="input-form username">
-                <input type="text" class="input" placeholder="Username">
+                <input name="username" type="text" class="input" placeholder="Username"/>
             </div>
             <!-- <div class="input-form email">
                 <input type="text" class="input" placeholder="Email">
             </div> -->
             <div class="input-form password">
-                <input type="password" class="input" placeholder="Password">
+                <input name="password" type="password" class="input" placeholder="Password"/>
             </div>
-            <div class="btn">
-                <a href="#">Login</a>
+             <button class="btn" type="submit">Submit</button>
+                <a href="/api/auth/google">Login with Your Google Account</a>
             </div>
         </div>
     </div>
