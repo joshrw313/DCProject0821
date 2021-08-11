@@ -7,14 +7,14 @@
     <title>Sign-Up</title>
   </head>
   <body>
-    <form action="/api/auth/signup" method="post">
+    <form action="api/auth/signup" method="post">
       <label for="username">First Name</label>
-      <input type="text" id="username" class="username" value="" />
+      <input type="text" id="username" name="username" value="" />
       <label for="e-mail">E-mail</label>
-      <input type="text" id="e-mail" class="e-mail" value="" />
+      <input type="text" id="e-mail" name="e-mail" value="" />
       <label for="password">Password</label>
-      <input type="text" id="password" class="password" />
-      <input type="button" value="Submit" />
+      <input type="text" id="password" name="password" />
+      <button type="submit">Submit</button>
     </form>
 
     <a href="/api/auth/google">Sign Up With Your Google Account</a>
