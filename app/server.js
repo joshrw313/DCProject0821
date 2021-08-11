@@ -133,7 +133,10 @@ app.get("/", (req, res) => {
 });
 app.get("/signup", (req, res) => {
   res.render("signup");
-})
+});
+app.get("/signin", (req, res) => {
+  res.render("signin");
+});
 
 // routes
 require('./routes/auth.routes')(app);
