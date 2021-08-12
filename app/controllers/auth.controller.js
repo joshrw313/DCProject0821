@@ -30,7 +30,8 @@ exports.signup = (req, res) => {
       } else {
         // user role = 1
         user.setRoles([1]).then(() => {
-          res.send({ message: "User was registered successfully!" });
+          res.set({ message: "User was registered successfully!" });
+          res.redirect('../../signin');
         });
       }
     })
@@ -74,14 +75,17 @@ exports.signin = (req, res) => {
           authorities.push("ROLE_" + roles[i].name.toUpperCase());
         }
 
-        res.status(200).send({
+       /* res.send({
           id: user.id,
           username: user.username,
           email: user.email,
           roles: authorities,
           accessToken: token,
           refreshToken: refreshToken,
-        });
+        });*/
+        //res.cookie('jwt', token);
+        res.cookie('jwt', {'token':token,'refreshToken':refreshToken});
+        res.redirect('../test/user');
       });
     })
     .catch(err => {

@@ -14,7 +14,8 @@ const catchError = (err, res) => {
 }
 
 const verifyToken = (req, res, next) => {
-  let token = req.headers["x-access-token"];
+  console.log(req);
+  let token = req.cookies['jwt'].token;
 
   if (!token) {
     return res.status(403).send({
