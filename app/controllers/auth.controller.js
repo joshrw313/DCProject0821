@@ -4,8 +4,8 @@ const { user: User, role: Role, refreshToken: RefreshToken } = db;
 
 const Op = db.Sequelize.Op;
 
-var jwt = require("jsonwebtoken");
-var bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 exports.signup = (req, res) => {
   // Save User to Database
@@ -131,4 +131,53 @@ exports.refreshToken = async (req, res) => {
   } catch (err) {
     return res.status(500).send({ message: err });
   }
+};
+
+exports.googleSignIn = (req, res)=>{
+    console.log('redirected', req.user)
+    /*let user = {
+        displayName: req.user.displayName,
+        name: req.user.name.givenName,
+        email: req.user._json.email,
+        provider: req.user.provider }
+    console.log(user)
+   */ 
+  User.findOne({
+    where: {
+      username: req.user.displayName
+    }
+  })
+  .then(async (user) => {
+      if (!user) {
+        User.create({
+          username: req.user.displayName,
+          email: req.user._json.email,
+          password: null,
+          provider: req.user.provider 
+        })
+        res.redirect('https://dcproject0821.xyz/api/auth/google');
+
+       }
+
+      const token = jwt.sign({ id: user.id }, config.secret, {
+        expiresIn: config.jwtExpiration
+      });
+
+      let refreshToken = await RefreshToken.createToken(user);
+      
+        
+        /*res.set({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          accessToken: token,
+          refreshToken: refreshToken,
+        });*/
+        res.cookie('jwt', {'token':token,'refreshToken':refreshToken});
+        res.redirect('/api/test/user');
+        
+      })
+    .catch(err => {
+      res.status(500).send({ message: err.message });
+    });
 };
