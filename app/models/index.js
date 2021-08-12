@@ -28,6 +28,7 @@ db.user = require("./user.model.js")(sequelize, Sequelize);
 db.role = require("./role.model.js")(sequelize, Sequelize);
 db.refreshToken = require("./refreshToken.model.js")(sequelize, Sequelize);
 db.board = require("./board.model.js")(sequelize, Sequelize);
+db.post = require("./post.model.js")(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -45,6 +46,18 @@ db.refreshToken.belongsTo(db.user, {
 db.user.hasOne(db.refreshToken, {
   foreignKey: 'userId', targetKey: 'id'
 });
+db.user.hasMany(db.post, {
+  foreignKey: 'userId', targetKey: 'id'
+});
+db.board.hasMany(db.post, {
+  foreignKey: 'boardId', targetKey: 'id'
+});
+db.post.belongsTo(db.user, {
+  foreignKey: 'userId', targetKey: 'id'
+});
+db.post.belongsTo(db.board, {
+  foreignKey: 'boardId', targetKey: 'id'
+})
 
 db.ROLES = ["user", "admin", "moderator"];
 
