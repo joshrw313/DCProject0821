@@ -67,7 +67,7 @@ db.comment.belongsTo(db.post, {
 });
 db.post.belongsTo(db.board, {
   foreignKey: 'boardId', targetKey: 'id'
-})
+});
 db.post.hasMany(db.comment, {
   foreignKey: 'postId', targetKey: 'id'
 });
