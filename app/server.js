@@ -66,7 +66,14 @@ app.get("/signup", (req, res) => {
 app.get("/signin", (req, res) => {
   res.render("signin");
 });
-
+app.get('/:topic', (req,res) => {
+  const {topic} = req.params;
+  const board = Board.findOne({
+    where: {
+      name: topic
+    }
+  })
+});
 // routes
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
