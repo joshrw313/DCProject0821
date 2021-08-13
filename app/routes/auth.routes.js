@@ -4,11 +4,11 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 module.exports = function(app) {
-const googleKey = require("../config/google.Oauth");
+// const googleKey = require("../config/google.Oauth");
 
 passport.use(new GoogleStrategy({
-	  clientID: googleKey.clientId, 
-	  clientSecret: googleKey.clientSecret, 
+	  clientID: "googleKey.clientId", 
+	  clientSecret: "googleKey.clientSecret", 
     callbackURL: "https://dcproject0821.xyz/api/auth/googleRedirect"
   },
   function(accessToken, refreshToken, profile, done) {
