@@ -33,6 +33,7 @@ const db = require("./models");
 const Role = db.role;
 const User = db.user;
 const RefreshToken = db.refreshToken;
+const Board = db.board;
 
 db.sequelize.sync({force: true}).then(() => {
   console.log('Drop and Resync Db');
@@ -54,6 +55,10 @@ function initial() {
     id: 3,
     name: "admin"
   });
+  Board.create({
+    name: "test",
+    description: "test"
+  })
 }
 
 // simple route
@@ -66,6 +71,9 @@ app.get("/signup", (req, res) => {
 app.get("/signin", (req, res) => {
   res.render("signin");
 });
+app.get("/test/post", (req, res) =>{
+  res.render("makepost");
+})
 
 // routes
 require('./routes/auth.routes')(app);
