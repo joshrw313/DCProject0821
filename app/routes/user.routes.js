@@ -35,4 +35,13 @@ module.exports = function(app) {
     [authJwt.verifyToken],
     controller.makePost
   );
+
+  app.post(
+    "/api/create/comment",
+    [authJwt.verifyToken],
+    controller.makeComment
+  );
+
 };
+
+

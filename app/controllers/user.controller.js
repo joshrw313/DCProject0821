@@ -1,5 +1,5 @@
 const db = require("../models");
-const {post: Post} = db;
+const {post: Post, comment: Comment} = db;
 exports.allAccess = (req, res) => {
   res.status(200).send("Public Content.");
 };
@@ -22,5 +22,13 @@ exports.makePost = (req, res) => {
     content: req.body.content,
     userId: req.userId,
     boardId: boardId
+  });
+}
+
+exports.makeComment = (req, res) => {
+  Comment.create({
+    content: req.body.content,
+    userId: req.userId,
+    postId: postId
   });
 }
