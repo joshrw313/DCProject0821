@@ -59,10 +59,29 @@ function initial() {
   });
 
   Board.create({
-    name: "test",
-    description: "test"
+    name: "Welcome",
+    description: "A place for new users to Introduce themselves"
   })
 
+  User.create({
+    username: "Josh",
+    email: "email",
+    password: "",
+  })
+
+  Post.create({
+    title: "Hello My name is Josh",
+    content: "My name is Josh and I am an aspirint web developer",
+    userId: 1,
+    boardId: 1
+  })
+
+  Post.create({
+    title: "Hello My name is still Josh",
+    content: "My name is Josh and I am an aspirint web developer",
+    userId: 1,
+    boardId: 1
+  })
 }
 
 // simple route
@@ -75,14 +94,15 @@ app.get("/signup", (req, res) => {
 app.get("/signin", (req, res) => {
   res.render("signin");
 });
-app.get('/:boardName', (req,res) => {
+app.get('/boards/:boardName', (req,res) => {
   const {boardName} = req.params;
-  const board = Board.findOne({
+  let contentStr = '';
+  Board.findOne({
     where: {
       name: boardName
     }
-  });
-  let contentStr = '';
+  })
+  .then(board => {
   // What if there is no post on that board?
   Post.findAll({
     where: {
@@ -117,6 +137,7 @@ app.get('/:boardName', (req,res) => {
         }
       })
     })
+  })
   })
 
 app.get("/post", (req, res) =>{
