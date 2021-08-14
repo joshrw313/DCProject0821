@@ -71,14 +71,14 @@ function initial() {
 
   Post.create({
     title: "Hello My name is Josh",
-    content: "My name is Josh and I am an aspirint web developer",
+    content: "My name is Josh and I am an aspiring web developer",
     userId: 1,
     boardId: 1
   })
 
   Post.create({
     title: "Hello My name is still Josh",
-    content: "My name is Josh and I am an aspirint web developer",
+    content: "My name is Josh and I am an aspiring web developer",
     userId: 1,
     boardId: 1
   })
@@ -94,15 +94,14 @@ app.get("/signup", (req, res) => {
 app.get("/signin", (req, res) => {
   res.render("signin");
 });
-app.get('/boards/:boardName', (req,res) => {
+app.get('/boards/:boardName', async (req,res) => {
   const {boardName} = req.params;
   let contentStr = '';
-  Board.findOne({
+  const board = await Board.findOne({
     where: {
       name: boardName
     }
   })
-  .then(board => {
   // What if there is no post on that board?
   Post.findAll({
     where: {
@@ -110,17 +109,13 @@ app.get('/boards/:boardName', (req,res) => {
     },
     order: [
       ['id', 'desc']
-    ]
+    ],
+    include: User 
   })
   .then(posts => {
     Array.from(posts).forEach(post => {
-      let user = User.findOne({
-        where: {
-          id : post.userId
-        }
-      });
       contentStr+=` 
-      <div><p><a href="#">${post.title}</a> | by: ${user.username}</p></div>
+      <div><p><a href="#">${post.title}</a> | by: ${post.user.username}</p></div>
       `
     });
     let content = {
@@ -138,7 +133,7 @@ app.get('/boards/:boardName', (req,res) => {
       })
     })
   })
-  })
+  
 
 app.get("/post", (req, res) =>{
   //res.cookie('board', {'board':req.params.board});
