@@ -1,5 +1,5 @@
 const db = require("../models");
-const {post: Post, comment: Comment} = db;
+const {post: Post, comment: Comment, board: Board} = db;
 exports.allAccess = (req, res) => {
   res.status(200).send("Public Content.");
 };
@@ -16,13 +16,19 @@ exports.moderatorBoard = (req, res) => {
   res.status(200).send("Moderator Content.");
 };
 
-exports.makePost = (req, res) => {
+exports.makePost = async (req, res) => {
+const board = await Board.findOne({
+   where: {
+     name: req.params.boardName
+   }
+ });
   Post.create({
     title: req.body.title,
     content: req.body.content,
     userId: req.userId,
-    boardId: boardId
+    boardId: board.id
   });
+  res.redirect('./');
 }
 
 exports.makeComment = (req, res) => {
@@ -31,4 +37,4 @@ exports.makeComment = (req, res) => {
     userId: req.userId,
     postId: postId
   });
-}
+};

@@ -59,7 +59,7 @@ function initial() {
   });
 
   Board.create({
-    name: "Welcome",
+    name: "welcome",
     description: "A place for new users to Introduce themselves"
   })
 
@@ -135,8 +135,7 @@ app.get('/boards/:boardName', async (req,res) => {
   })
   
 
-app.get("/post", (req, res) =>{
-  //res.cookie('board', {'board':req.params.board});
+app.get("/boards/:boardName/post", (req, res) =>{
   res.render("makepost");
 })
 

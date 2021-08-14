@@ -31,7 +31,7 @@ module.exports = function(app) {
   );
   
   app.post(
-    "/api/create/posts",
+    "/boards/:boardName/create",
     [authJwt.verifyToken],
     controller.makePost
   );
