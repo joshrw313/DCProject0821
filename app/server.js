@@ -29,11 +29,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
+
 const db = require("./models");
 const Role = db.role;
 const User = db.user;
 const RefreshToken = db.refreshToken;
 const Board = db.board;
+const Post = db.post;
 
 db.sequelize.sync({force: true}).then(() => {
   console.log('Drop and Resync Db');
@@ -55,10 +57,12 @@ function initial() {
     id: 3,
     name: "admin"
   });
+
   Board.create({
     name: "test",
     description: "test"
   })
+
 }
 
 // simple route
@@ -71,15 +75,51 @@ app.get("/signup", (req, res) => {
 app.get("/signin", (req, res) => {
   res.render("signin");
 });
-app.get('/:topic', (req,res) => {
-  const {topic} = req.params;
+app.get('/:boardName', (req,res) => {
+  const {boardName} = req.params;
   const board = Board.findOne({
     where: {
-      name: topic
+      name: boardName
     }
+  });
+  let contentStr = '';
+  Post.findAll({
+    where: {
+      boardId: board.id
+    },
+    order: [
+      ['id', 'desc']
+    ]
   })
-});
-app.get("/test/post", (req, res) =>{
+  .then(posts => {
+    Array.from(posts).forEach(post => {
+      let user = User.findOne({
+        where: {
+          id : post.userId
+        }
+      });
+      contentStr+=` 
+      <div><p><a href="#">${post.title}</a> | by: ${user.username}</p></div>
+      `
+    });
+    let content = {
+      title: board.name,
+      body: contentStr
+    }
+    return content  
+    })
+    .then(content => {
+      res.render('main', {
+        locals: {
+          title: content.title,
+          body: content.body
+        }
+      })
+    })
+  })
+
+app.get("/post", (req, res) =>{
+  //res.cookie('board', {'board':req.params.board});
   res.render("makepost");
 })
 
