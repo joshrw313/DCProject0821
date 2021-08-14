@@ -83,6 +83,7 @@ app.get('/:boardName', (req,res) => {
     }
   });
   let contentStr = '';
+  // What if there is no post on that board?
   Post.findAll({
     where: {
       boardId: board.id
