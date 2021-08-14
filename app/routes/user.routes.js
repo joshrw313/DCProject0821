@@ -37,13 +37,13 @@ module.exports = function(app) {
   );
 
   app.post(
-    "/boards/:boardName/:postTitle/comment",
+    "/boards/:boardName/:postId/comment",
     [authJwt.verifyToken],
     controller.makeComment
   );
 
   app.get(
-    "/boards/:boardName/:postTitle",
+    "/boards/:boardName/:postId",
     controller.getPost
   );
 };

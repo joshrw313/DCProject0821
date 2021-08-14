@@ -115,12 +115,12 @@ app.get('/boards/:boardName', async (req,res) => {
   .then(posts => {
     Array.from(posts).forEach(post => {
       contentStr+=` 
-      <div><p><a href="#">${post.title}</a> | by: ${post.user.username}</p></div>
+      <div><p><a href="./${post.id}">${post.title}</a> | by: ${post.user.username}</p></div>
       `
     });
     let content = {
       title: board.name,
-      body: contentStr
+      body: contentStr,
     }
     return content  
     })
@@ -128,7 +128,8 @@ app.get('/boards/:boardName', async (req,res) => {
       res.render('main', {
         locals: {
           title: content.title,
-          body: content.body
+          body: content.body,
+          form: ''
         }
       })
     })

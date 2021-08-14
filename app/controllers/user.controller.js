@@ -1,5 +1,5 @@
 const db = require("../models");
-const {post: Post, comment: Comment, board: Board} = db;
+const {post: Post, comment: Comment, board: Board, user: User} = db;
 exports.allAccess = (req, res) => {
   res.status(200).send("Public Content.");
 };
@@ -36,14 +36,15 @@ exports.makeComment = (req, res) => {
   Comment.create({
     content: req.body.content,
     userId: req.userId,
-    postId: postId
+    postId: req.params.postId
   });
+  res.redirect('./');
 };
 
 exports.getPost = async (req, res) => {
   const post = await Post.findOne({
      where: {
-       title: req.params.postTitle
+       id: req.params.postId
      }
    });
    const comments = await Comment.findAll({
@@ -52,32 +53,29 @@ exports.getPost = async (req, res) => {
      },
      include: User
    });
-   let commentStr = "";
+   let commentStr = '';
+   if (comments) {
    Array.from(comments).forEach(comment => {
    commentStr+=` 
       <div><p> ${comment.content} | ${comment.user.username}</p></div>
       `
    });
+  }
    let postStr = `
       <div><p> ${post.content} </p></div>
    `;
    const content = {
      title: post.title,
-     content: `
-      ${postStr} 
-      <br>
-      <hr>
-      ${commentStr}
-      <hr>
-     `
+     content: `${postStr} <br><hr>${commentStr}<hr>`
    }
    res.render('main', {
     locals: {
       title: content.title,
-      body: content.body
+      body: content.body,
+      postid: post.id
     },
     partials: {
-      form: '/partials/makecomment'
+      form: '../partials/makecomment'
     }
   })
   }
