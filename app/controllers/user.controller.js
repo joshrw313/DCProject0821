@@ -22,6 +22,7 @@ const board = await Board.findOne({
      name: req.params.boardName
    }
  });
+ 
   Post.create({
     title: req.body.title,
     content: req.body.content,
@@ -38,3 +39,45 @@ exports.makeComment = (req, res) => {
     postId: postId
   });
 };
+
+exports.getPost = async (req, res) => {
+  const post = await Post.findOne({
+     where: {
+       title: req.params.postTitle
+     }
+   });
+   const comments = await Comment.findAll({
+     where:{
+       postId: post.id
+     },
+     include: User
+   });
+   let commentStr = "";
+   Array.from(comments).forEach(comment => {
+   commentStr+=` 
+      <div><p> ${comment.content} | ${comment.user.username}</p></div>
+      `
+   });
+   let postStr = `
+      <div><p> ${post.content} </p></div>
+   `;
+   const content = {
+     title: post.title,
+     content: `
+      ${postStr} 
+      <br>
+      <hr>
+      ${commentStr}
+      <hr>
+     `
+   }
+   res.render('main', {
+    locals: {
+      title: content.title,
+      body: content.body
+    },
+    partials: {
+      form: '/partials/makecomment'
+    }
+  })
+  }

@@ -37,11 +37,15 @@ module.exports = function(app) {
   );
 
   app.post(
-    "/api/create/comment",
+    "/boards/:boardName/:postTitle/comment",
     [authJwt.verifyToken],
     controller.makeComment
   );
 
+  app.get(
+    "/boards/:boardName/:postTitle",
+    controller.getPost
+  );
 };
 
 
