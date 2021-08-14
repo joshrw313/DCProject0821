@@ -54,19 +54,18 @@ exports.getPost = async (req, res) => {
      include: User
    });
    let commentStr = '';
-   if (comments) {
-   Array.from(comments).forEach(comment => {
+   comments.forEach(comment => {
    commentStr+=` 
       <div><p> ${comment.content} | ${comment.user.username}</p></div>
       `
    });
-  }
+  
    let postStr = `
       <div><p> ${post.content} </p></div>
    `;
    const content = {
      title: post.title,
-     content: `${postStr} <br><hr>${commentStr}<hr>`
+     body: `${postStr} <br><hr>${commentStr}<hr>`
    }
    res.render('main', {
     locals: {
