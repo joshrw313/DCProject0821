@@ -1,5 +1,7 @@
 const db = require("../models");
 const {post: Post, comment: Comment, board: Board, user: User} = db;
+const config = require("../config/auth.config");
+
 exports.allAccess = (req, res) => {
   res.status(200).send("Public Content.");
 };
@@ -29,7 +31,7 @@ const board = await Board.findOne({
     userId: req.userId,
     boardId: board.id
   });
-  res.redirect('./');
+  res.redirect(`${config.domainName}/boards/${req.params.boardName}`);
 }
 
 exports.makeComment = (req, res) => {
@@ -38,7 +40,7 @@ exports.makeComment = (req, res) => {
     userId: req.userId,
     postId: req.params.postId
   });
-  res.redirect('./');
+  res.redirect(`${config.domainName}/boards/${req.params.boardName}/${req.params.postId}`);
 };
 
 exports.getPost = async (req, res) => {
@@ -65,7 +67,7 @@ exports.getPost = async (req, res) => {
    `;
    const content = {
      title: post.title,
-     body: `${postStr} <br><hr>${commentStr}<hr>`
+     body: `${postStr} <hr>${commentStr}<hr>`
    }
    res.render('main', {
     locals: {
@@ -100,7 +102,7 @@ exports.getPost = async (req, res) => {
   .then(posts => {
     Array.from(posts).forEach(post => {
       contentStr+=` 
-      <div><p><a href="./${post.id}">${post.title}</a> | by: ${post.user.username}</p></div>
+      <div><p><a href="${config.domainName}/boards/${req.params.boardName}/${post.id}">${post.title}</a> | by: ${post.user.username}</p></div>
       `
     });
     let content = {

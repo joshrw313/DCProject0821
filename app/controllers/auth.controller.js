@@ -31,7 +31,7 @@ exports.signup = (req, res) => {
         // user role = 1
         user.setRoles([1]).then(() => {
           res.set({ message: "User was registered successfully!" });
-          res.redirect('../../signin');
+          res.redirect(`${config.domainName}/signin`);
         });
       }
     })
@@ -85,7 +85,7 @@ exports.signin = (req, res) => {
         });*/
         //res.cookie('jwt', token);
         res.cookie('jwt', {'token':token,'refreshToken':refreshToken});
-        res.redirect('../test/user');
+        res.redirect(`${config.domainName}/`);
       });
     })
     .catch(err => {

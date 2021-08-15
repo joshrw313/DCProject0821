@@ -86,7 +86,13 @@ function initial() {
 
 // simple route
 app.get("/", (req, res) => {
-  res.render('main');
+  res.render('main', {
+    locals: {
+      title: "Home",
+      body: "Hello Team",
+      form: ''
+    }
+  });
 });
 app.get("/signup", (req, res) => {
   res.render("signup");
