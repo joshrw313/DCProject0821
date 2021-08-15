@@ -46,6 +46,11 @@ module.exports = function(app) {
     "/boards/:boardName/:postId",
     controller.getPost
   );
+
+  app.get(
+    '/boards/:boardName', 
+    controller.getBoard
+  );
 };
 
 

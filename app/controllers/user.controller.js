@@ -77,4 +77,45 @@ exports.getPost = async (req, res) => {
       form: '../partials/makecomment'
     }
   })
-  }
+  };
+
+  exports.getBoard = async (req,res) => {
+  const {boardName} = req.params;
+  let contentStr = '';
+  const board = await Board.findOne({
+    where: {
+      name: boardName
+    }
+  })
+  // What if there is no post on that board?
+  Post.findAll({
+    where: {
+      boardId: board.id
+    },
+    order: [
+      ['id', 'desc']
+    ],
+    include: User 
+  })
+  .then(posts => {
+    Array.from(posts).forEach(post => {
+      contentStr+=` 
+      <div><p><a href="./${post.id}">${post.title}</a> | by: ${post.user.username}</p></div>
+      `
+    });
+    let content = {
+      title: board.name,
+      body: contentStr,
+    }
+    return content  
+    })
+    .then(content => {
+      res.render('main', {
+        locals: {
+          title: content.title,
+          body: content.body,
+          form: ''
+        }
+      })
+    })
+  };
