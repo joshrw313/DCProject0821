@@ -18,16 +18,18 @@ const verifyToken = (req, res, next) => {
   let token = req.cookies['jwt'].token;
 
   if (!token) {
-    return res.status(403).send({
+    /*return res.status(403).send({
       message: "No token provided!"
-    });
+    });*/
+      res.redirect(`${config.domainName}/noaccess/signin`);
   }
 
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
-      return res.status(401).send({
+      /*return res.status(401).send({
         message: "Unauthorized!"
-      });
+      });*/
+      res.redirect(`${config.domainName}/noaccess/signin`);
     }
     req.userId = decoded.id;
     next();

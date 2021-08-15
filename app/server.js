@@ -98,7 +98,18 @@ app.get("/signup", (req, res) => {
   res.render("signup");
 });
 app.get("/signin", (req, res) => {
-  res.render("signin");
+  res.render("signin",{
+    locals: {
+      message: ''
+    }
+  });
+});
+app.get("/noaccess/signin", (req, res) => {
+  res.render("signin",{
+    locals: {
+      message: 'Please log in or create an account to use the site'
+    }
+  });
 });
 app.get("/boards/:boardName/post", (req, res) =>{
   res.render("makepost");
