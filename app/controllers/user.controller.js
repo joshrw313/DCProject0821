@@ -25,13 +25,13 @@ const board = await Board.findOne({
    }
  });
  
-  Post.create({
+const post = await  Post.create({
     title: req.body.title,
     content: req.body.content,
     userId: req.userId,
     boardId: board.id
   });
-  res.redirect(`${config.domainName}/boards/${req.params.boardName}`);
+  res.redirect(`${config.domainName}/boards/${req.params.boardName}/${post.id}`);
 }
 
 exports.makeComment = (req, res) => {
@@ -58,7 +58,7 @@ exports.getPost = async (req, res) => {
    let commentStr = '';
    comments.forEach(comment => {
    commentStr+=` 
-      <div><p> ${comment.content} | ${comment.user.username}</p></div>
+      <div><p> ${comment.content} | ${comment.createdAt} | by: ${comment.user.username}</p></div>
       `
    });
   
@@ -107,7 +107,10 @@ exports.getPost = async (req, res) => {
     });
     let content = {
       title: board.name,
-      body: contentStr,
+      body: `
+      <div>${contentStr}</div>
+      <a href="${config.domainName}/post/boards/${req.params.boardName}">Create Post</a> 
+      `
     }
     return content  
     })

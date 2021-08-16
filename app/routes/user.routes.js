@@ -32,7 +32,7 @@ module.exports = function(app) {
   );
   
   app.post(
-    "/boards/:boardName/create",
+    "/post/boards/:boardName/create",
     [authJwt.verifyToken],
     controller.makePost
   );
@@ -79,8 +79,13 @@ module.exports = function(app) {
 
 });
 
-app.get("/boards/:boardName/post",[authJwt.verifyToken], (req, res) =>{
-  res.render("makepost");
+app.get("/post/boards/:boardName",[authJwt.verifyToken], (req, res) =>{
+  res.render("makepost", {
+    locals: {
+      domain: config.domainName,
+      boardName: req.params.boardName
+    }
+  });
 });
 }
 
