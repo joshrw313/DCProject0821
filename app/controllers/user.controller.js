@@ -67,11 +67,11 @@ exports.getPost = async (req, res) => {
    `;
    const content = {
      title: post.title,
-     body: `${postStr} <hr>${commentStr}<hr>`
+     body: `<h3>${post.title}</h3><hr> ${postStr} <hr>${commentStr}<hr>`
    }
    res.render('main', {
     locals: {
-      title: content.title,
+      title: config.domainName,
       body: content.body,
       postid: post.id
     },
@@ -102,7 +102,7 @@ exports.getPost = async (req, res) => {
   .then(posts => {
     Array.from(posts).forEach(post => {
       contentStr+=` 
-      <div><p><a href="${config.domainName}/boards/${req.params.boardName}/${post.id}">${post.title}</a> | by: ${post.user.username}</p></div>
+      <div><p><a href="${config.domainName}/boards/${req.params.boardName}/${post.id}">${post.title}</a> | at: ${post.updatedAt} | by: ${post.user.username}</p></div>
       `
     });
     let content = {
@@ -114,10 +114,58 @@ exports.getPost = async (req, res) => {
     .then(content => {
       res.render('main', {
         locals: {
-          title: content.title,
-          body: content.body,
+          title: config.domainName,
+          body: `<hr><h3>${content.title}</h3><div>${content.body}</div>`,
           form: ''
         }
       })
     })
   };
+
+  exports.getHome =  async (req, res) => {
+  let contentParagraph = `
+  <div><p>  Hello and welcome to our backend project. I will allow the team to introduce
+  themselves by making posts on the <a href="${config.domainName}/boards/welcome">Welcome</a> board.</p> 
+  <p>This is a simple site with topic boards where users can create posts. Users can also 
+  leave comments on posts.</p></div>
+  `;
+  let boardList = '';
+  const boards = await Board.findAll().catch(err => console.log(err));
+  Array.from(boards).forEach(board => {
+    boardList+=`
+    <div><h3><a href="${config.domainName}/boards/${board.name}">${board.name}</a></h3></div>
+    <div><h4>${board.description}<h4></div>
+    <br>
+    `
+  })
+  const bodyStr = `
+  <hr>
+  ${contentParagraph}
+  <hr>
+  ${boardList} 
+  `
+  res.render('main', {
+    locals: {
+      title: config.domainName,
+      body: bodyStr,
+      form: ''
+    }
+  });
+}
+
+exports.errSignin =  (req, res) => {
+  let messageStr = '';
+  if (req.params.errMsg === 'nouser') {
+    messageStr = 'Please enter a valid username or create an account'
+  } else if (req.params.errMsg === 'nopassphrase') {
+    messageStr = 'Please enter a vaild password'
+  } else if (req.params.errMsg === 'noaccess') {
+    messageStr = 'Please login or create an account to use the site'
+  }
+  res.render("signin",{
+    locals: {
+      message:messageStr,
+      domain:config.domainName 
+    }
+  });
+}

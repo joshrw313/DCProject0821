@@ -1,5 +1,6 @@
 const { authJwt } = require("../middleware");
 const controller = require("../controllers/user.controller");
+const config = require("../config/auth.config");
 
 module.exports = function(app) {
   app.use(function(req, res, next) {
@@ -43,14 +44,43 @@ module.exports = function(app) {
   );
 
   app.get(
+    "/",
+    controller.getHome
+  );
+
+  app.get(
     "/boards/:boardName/:postId",
+    [authJwt.verifyToken],
     controller.getPost
   );
 
   app.get(
     '/boards/:boardName', 
+    [authJwt.verifyToken],
     controller.getBoard
   );
-};
 
+  app.get(
+    '/:errMsg/signin',
+    controller.errSignin
+  )
+
+  app.get("/signup", (req, res) => {
+   res.render("signup");
+  });
+
+  app.get("/signin", (req, res) => {
+   res.render("signin",{
+     locals: {
+       message:'', 
+       domain:config.domainName 
+     }
+   });
+
+});
+
+app.get("/boards/:boardName/post",[authJwt.verifyToken], (req, res) =>{
+  res.render("makepost");
+});
+}
 
