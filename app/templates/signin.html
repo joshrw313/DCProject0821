@@ -9,7 +9,7 @@
 </head>
 <body>
     <div><p>${message}</p></div>
-    <form action="api/auth/signin" method="post">
+    <form action="${domain}/api/auth/signin" method="post">
     <div class="wrapper">
         <div class="loginForm">
             <div class="title">
@@ -29,7 +29,7 @@
             </div>
         </div>
     </div>
-    <div><a href="/signup">Create an Account</a></div>
+    <div><a href="${domain}/signup">Create an Account</a></div>
 </form>
 </body>
 </html>

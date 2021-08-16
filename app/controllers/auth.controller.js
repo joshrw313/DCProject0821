@@ -48,7 +48,8 @@ exports.signin = (req, res) => {
   })
   .then(async (user) => {
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        res.redirect(`${config.domainName}/nouser/signin`);
+        //return res.status(404).send({ message: "User Not found." });
       }
 
       const passwordIsValid = bcrypt.compareSync(
@@ -57,10 +58,11 @@ exports.signin = (req, res) => {
       );
 
       if (!passwordIsValid) {
-        return res.status(401).send({
+       /* return res.status(401).send({
           accessToken: null,
           message: "Invalid Password!"
-        });
+        });*/
+        res.redirect(`${config.domainName}/nopassphrase/signin`);
       }
 
       const token = jwt.sign({ id: user.id }, config.secret, {

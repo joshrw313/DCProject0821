@@ -85,35 +85,71 @@ function initial() {
 }
 
 // simple route
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  let contentParagraph = `
+  <div><p>  Hello and welcome to our backend project. I will allow the team to introduce
+  themselves by making posts on the <a href="${config.domainName}/boards/welcome">Welcome</a> board.</p> 
+  <p>This is a simple site with topic boards that contain posts created by registered users. Users can also 
+  leave comments on posts.</p></div>
+  `;
+  let boardList = '';
+  const boards = await Board.findAll().catch(err => console.log(err));
+  Array.from(boards).forEach(board => {
+    boardList+=`
+    <div><h3><a href="${config.domainName}/boards/${board.name}">${board.name}</a></h3></div>
+    <div><p>${board.description}</p></div>
+    <br>
+    `
+  })
+  const bodyStr = `
+  <h1>${config.domainName}</h1>
+  <hr>
+  ${contentParagraph}
+  <hr>
+  ${boardList} 
+  `
   res.render('main', {
     locals: {
-      title: "Home",
-      body: "Hello Team",
+      title: config.domainName,
+      body: bodyStr,
       form: ''
     }
   });
 });
+
 app.get("/signup", (req, res) => {
   res.render("signup");
 });
+
 app.get("/signin", (req, res) => {
   res.render("signin",{
     locals: {
-      message: ''
+      message:'', 
+      domain:config.domainName 
     }
   });
 });
-app.get("/noaccess/signin", (req, res) => {
+
+app.get("/:errMsg/signin", (req, res) => {
+  let messageStr = '';
+  if (req.params.errMsg === 'nouser') {
+    messageStr = 'Please enter a valid username or create an account'
+  } else if (req.params.errMsg === 'nopassphrase') {
+    messageStr = 'Please enter a vaild password'
+  } else if (req.params.errMsg === 'noaccess') {
+    messageStr = 'Please login or create an account to use the site'
+  }
   res.render("signin",{
     locals: {
-      message: 'Please log in or create an account to use the site'
+      message:messageStr,
+      domain:config.domainName 
     }
   });
 });
+
 app.get("/boards/:boardName/post", (req, res) =>{
   res.render("makepost");
-})
+});
 
 // routes
 require('./routes/auth.routes')(app);
