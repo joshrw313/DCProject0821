@@ -15,7 +15,8 @@ const catchError = (err, res) => {
 
 const verifyToken = (req, res, next) => {
   console.log(req);
-  let token = req.cookies['jwt'].token;
+  let token = null;
+  if (req.cookies['jwt']) token = req.cookies['jwt'].token;
 
   if (!token) {
     /*return res.status(403).send({
