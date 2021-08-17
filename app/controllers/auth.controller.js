@@ -176,7 +176,7 @@ exports.googleSignIn = (req, res)=>{
           refreshToken: refreshToken,
         });*/
         res.cookie('jwt', {'token':token,'refreshToken':refreshToken});
-        res.redirect('/api/test/user');
+        res.redirect(`${config.domainName}/`);
         
       })
     .catch(err => {
