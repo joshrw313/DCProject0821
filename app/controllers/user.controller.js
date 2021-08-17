@@ -48,26 +48,34 @@ exports.getPost = async (req, res) => {
      where: {
        id: req.params.postId
      }
-   });
+   })
+   .catch(err => console.log(err));
    const comments = await Comment.findAll({
      where:{
        postId: post.id
      },
      include: User
-   });
+   })
+   .catch(err => console.log(err));
    let commentStr = '';
    comments.forEach(comment => {
    commentStr+=` 
       <div><p> ${comment.content} | ${comment.createdAt} | by: ${comment.user.username}</p></div>
       `
    });
-  
+   const board = await Board.findOne({
+        where: {
+          name: req.params.boardName
+        }
+   })
+   .catch(err => console.log(err));
    let postStr = `
       <div><p> ${post.content} </p></div>
    `;
    const content = {
      title: post.title,
-     body: `<h3>${post.title}</h3><hr> ${postStr} <hr>${commentStr}<hr>`
+     body: `<hr><b><a href="${config.domainName}/boards/${req.params.boardName}">${req.params.boardName}</a></b><span> - ${board.description}</span>
+     <hr><h3>${post.title}</h3><hr> ${postStr} <hr>${commentStr}<hr>`
    }
    res.render('main', {
     locals: {
@@ -118,11 +126,12 @@ exports.getPost = async (req, res) => {
       res.render('main', {
         locals: {
           title: config.domainName,
-          body: `<hr><h3>${content.title}</h3><div>${content.body}</div>`,
+          body: `<hr><h3>${content.title}</h3><h5>${board.description}<h5><hr><div>${content.body}</div>`,
           form: ''
         }
       })
     })
+    .catch(err => console.log(err))
   };
 
   exports.getHome =  async (req, res) => {
