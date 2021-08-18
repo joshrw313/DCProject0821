@@ -87,5 +87,9 @@ app.get("/post/boards/:boardName",[authJwt.verifyToken], (req, res) =>{
     }
   });
 });
-}
+
+app.post(
+  "/boards/:boardName/:postId/delete", [authJwt.verifyToken], controller.deletePost
+)
+};
 

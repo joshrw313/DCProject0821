@@ -1,6 +1,7 @@
 const db = require("../models");
 const {post: Post, comment: Comment, board: Board, user: User} = db;
 const config = require("../config/auth.config");
+const { post } = require("../models");
 
 exports.allAccess = (req, res) => {
   res.status(200).send("Public Content.");
@@ -180,4 +181,21 @@ exports.errSignin =  (req, res) => {
       domain:config.domainName 
     }
   });
+
+  exports.deletePost = async (req, res) => {
+    let post = await Post.findOne({
+      where: {
+        id: req.params.postId
+      }
+    })
+    if (req.userId == post.userId){
+      post.destroy()
+    // Post.destroy({
+    //   where: {
+    //     id: req.params.postId
+    //   }
+    // })
+    // .catch(err => console.log(err))
+  }
+  };
 }
