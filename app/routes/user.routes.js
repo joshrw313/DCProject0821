@@ -83,9 +83,44 @@ app.get("/post/boards/:boardName",[authJwt.verifyToken], (req, res) =>{
   res.render("makepost", {
     locals: {
       domain: config.domainName,
-      boardName: req.params.boardName
+      boardName: req.params.boardName,
+      titleValue: 'Title',
+      contentValue: 'Content',
+      action: `${config.domainName}/post/boards/${req.params.boardName}/create` 
     }
   });
 });
-}
+
+app.get("/editForm/boards/:boardName/:postId",[authJwt.verifyToken], controller.editPostForm)
+/*  const post = await Post.findAll({
+    where: {
+      id: req.params.postId
+    }
+  })
+  .catch(err => console.log(err));
+
+  await res.render("makepost", {
+    locals: {
+      domain: config.domainName,
+      boardName: req.params.boardName,
+      titleValue: post.title,
+      contentValue: post.content,
+      action: `${config.domainName}/boards/:boardName/:postId/edit` 
+    }
+  });*/
+//});
+
+
+app.post(
+  "/boards/:boardName/:postId/delete", 
+  [authJwt.verifyToken],
+   controller.deletePost
+)
+
+app.post(
+  "/boards/:boardName/:postId/edit", 
+  [authJwt.verifyToken],
+   controller.editPost
+)
+};
 

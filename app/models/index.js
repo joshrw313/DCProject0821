@@ -64,12 +64,16 @@ db.comment.belongsTo(db.user, {
 });
 db.comment.belongsTo(db.post, {
   foreignKey: 'postId', targetKey: 'id'
+},{
+  onDelete: 'CASCADE'
 });
 db.post.belongsTo(db.board, {
   foreignKey: 'boardId', targetKey: 'id'
 });
 db.post.hasMany(db.comment, {
   foreignKey: 'postId', targetKey: 'id'
+},{
+  onDelete: 'CASCADE'
 });
 
 db.ROLES = ["user", "admin", "moderator"];
