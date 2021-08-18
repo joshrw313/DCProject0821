@@ -1,8 +1,7 @@
 const db = require("../models");
 const {post: Post, comment: Comment, board: Board, user: User} = db;
 const config = require("../config/auth.config");
-const { post } = require("../models");
-
+const { Op } = require("sequelize");
 exports.allAccess = (req, res) => {
   res.status(200).send("Public Content.");
 };
@@ -51,6 +50,7 @@ exports.getPost = async (req, res) => {
      }
    })
    .catch(err => console.log(err));
+
    const comments = await Comment.findAll({
      where:{
        postId: post.id
@@ -58,6 +58,21 @@ exports.getPost = async (req, res) => {
      include: User
    })
    .catch(err => console.log(err));
+
+   let deleteButton = '';
+   let editLink = '';
+   if (req.userId && req.userId == post.userId) {
+     deleteButton = `
+    <form id="delete" action="${config.domainName}/boards/${req.params.boardName}/${req.params.postId}/delete" method="post">
+    <button id="delete" type="submit">Delete</button>
+    </form>  
+     `
+     editLink =  `
+    <a href="${config.domainName}/editForm/boards/${req.params.boardName}/${req.params.postId}">Edit</a> 
+     `
+   };
+   
+
    let commentStr = '';
    comments.forEach(comment => {
    commentStr+=` 
@@ -76,7 +91,7 @@ exports.getPost = async (req, res) => {
    const content = {
      title: post.title,
      body: `<hr><b><a href="${config.domainName}/boards/${req.params.boardName}">${req.params.boardName}</a></b><span> - ${board.description}</span>
-     <hr><h3>${post.title}</h3><hr> ${postStr} <hr>${commentStr}<hr>`
+     <hr><h3>${post.title}</h3><div>${editLink} ${deleteButton}</div><hr> ${postStr} <hr>${commentStr}<hr>`
    }
    res.render('main', {
     locals: {
@@ -181,21 +196,58 @@ exports.errSignin =  (req, res) => {
       domain:config.domainName 
     }
   });
-
+}
   exports.deletePost = async (req, res) => {
-    let post = await Post.findOne({
+/*    let post = await Post.findAll({
       where: {
         id: req.params.postId
       }
     })
-    if (req.userId == post.userId){
-      post.destroy()
-    // Post.destroy({
-    //   where: {
-    //     id: req.params.postId
-    //   }
-    // })
-    // .catch(err => console.log(err))
+    .catch(err => console.log(err));
+
+   if (req.userId == post.userId){
+     await post.destroy()
+     .catch(err => console.log(err));
   }
+  */
+      Post.destroy({
+        where: {
+          [Op.and]: [
+            {id: req.params.postId},
+            {userId: req.userId}
+          ]
+        }
+      })
+      .catch(err => console.log(err));
+      res.redirect(`${config.domainName}/boards/${req.params.boardName}`);
+};
+
+  exports.editPost = async (req, res) => {
+    await Post.update({
+      title: req.body.title,
+      content: req.body.content
+    }, {
+      where: {
+        id: req.params.postId
+      }
+    })
+    res.redirect(`${config.domainName}/boards/${req.params.boardName}/${req.params.postId}`);
   };
-}
+
+  exports.editPostForm = async (req, res) => {
+  Post.findOne({
+    where: {
+      id: req.params.postId
+    }
+  })
+  .then(post => {
+ res.render("makepost", {
+    locals: {
+      domain: config.domainName,
+      boardName: req.params.boardName,
+      titleValue: post.title,
+      contentValue: post.content,
+      action: `${config.domainName}/boards/${req.params.boardName}/${req.params.postId}/edit` 
+    }
+  })
+  })};

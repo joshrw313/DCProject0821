@@ -8,13 +8,20 @@
   </head>
   <body>
     <form action="api/auth/signup" method="post">
-      <label for="username">First Name</label>
+      <div>
+      <label for="username">Username</label>
       <input type="text" id="username" name="username" required/>
-      <label for="e-mail">E-mail</label>
+      </div>
+      <div>
+      <label for="e-mail">Email</label>
       <input type="text" id="e-mail" name="email" required/>
+      </div>
+      <div>
       <label for="password">Password</label>
       <input type="password" id="password" name="password" required/>
+      </div><div>
       <button type="submit">Submit</button>
+      </div>
     </form>
 
     <a href="/api/auth/google">Sign Up With Your Google Account</a>
