@@ -46,6 +46,14 @@ exports.makeComment = (req, res) => {
 
 exports.getPost = async (req, res) => {
   try {
+  let buttons = {
+    signupOrUsername: config.signupOrUsername,
+    loginOrLogout: config.loginOrLogout
+  };
+  if (req.cookies['jwt'] && req.cookies['jwt'].username) {
+    buttons.signupOrUsername = `${req.cookies['jwt'].username}`,
+    buttons.loginOrLogout = `<a href="/logout">Logout</a>`
+  }
    const post = await Post.findOne({
      where: {
        id: req.params.postId
@@ -73,22 +81,6 @@ exports.getPost = async (req, res) => {
     <button><a href="${config.domainName}/editForm/boards/${req.params.boardName}/${req.params.postId}">Edit</a></button>
      `
    };
- 
-  
-   if (req.userId) {
-    let user = await User.findOne({
-       where: {
-         id: req.userId
-       }
-     });
-     config.signupOrUsername = `${user.username}`;
-     config.loginOrLogout = `<a href="${config.domainName}/logout">Logout</a>`;
-   } else {
-      config.signupOrUsername = `<a href="${config.domainName}/signup">Signup</a>`
-      config.loginOrLogout = `<a href="${config.domainName}/signin">Login</a>`
-   };
-   
-
    let commentStr = '';
    comments.forEach(comment => {
    commentStr+=` 
@@ -114,8 +106,8 @@ exports.getPost = async (req, res) => {
       title: config.domainName,
       body: content.body,
       postid: post.id,
-      signup: config.signupOrUsername,
-      login: config.loginOrLogout
+      signup: buttons.signupOrUsername,
+      login: buttons.loginOrLogout
     },
     partials: {
       form: '../partials/makecomment'
@@ -135,6 +127,14 @@ exports.getPost = async (req, res) => {
   };
 
   exports.getBoard = async (req,res) => {
+  let buttons = {
+    signupOrUsername: config.signupOrUsername,
+    loginOrLogout: config.loginOrLogout
+  };
+  if (req.cookies['jwt'] && req.cookies['jwt'].username) {
+    buttons.signupOrUsername = `${req.cookies['jwt'].username}`,
+    buttons.loginOrLogout = `<a href="/logout">Logout</a>`
+  }
   const {boardName} = req.params;
   let contentStr = '';
   const board = await Board.findOne({
@@ -176,8 +176,8 @@ exports.getPost = async (req, res) => {
           title: config.domainName,
           body: `<hr><h3>${content.title}</h3><h5>${board.description}<h5><hr><div>${content.body}</div>`,
           form: '',
-          signup: config.signupOrUsername,
-          login: config.loginOrLogout
+          signup: buttons.signupOrUsername,
+          login: buttons.loginOrLogout
         }
       })
     })
@@ -197,6 +197,14 @@ exports.getPost = async (req, res) => {
   };
 
   exports.getHome =  async (req, res) => {
+  let buttons = {
+    signupOrUsername: config.signupOrUsername,
+    loginOrLogout: config.loginOrLogout
+  };
+  if (req.cookies['jwt'] && req.cookies['jwt'].username) {
+    buttons.signupOrUsername = `${req.cookies['jwt'].username}`,
+    buttons.loginOrLogout = `<a href="/logout">Logout</a>`
+  }
   let contentParagraph = `
   <div><p>  Hello and welcome to our backend project. I will allow the team to introduce
   themselves by making posts on the <a href="${config.domainName}/boards/welcome">Welcome</a> board.</p> 
@@ -223,8 +231,8 @@ exports.getPost = async (req, res) => {
       title: config.domainName,
       body: bodyStr,
       form: '',
-      signup: config.signupOrUsername,
-      login: config.loginOrLogout
+      signup: buttons.signupOrUsername,
+      login: buttons.loginOrLogout
     }
   });
 }
