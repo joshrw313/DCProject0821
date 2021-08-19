@@ -11,6 +11,7 @@ module.exports = function(app) {
     next();
   });
 
+/*
   app.get("/api/test/all", controller.allAccess);
 
   app.get(
@@ -30,6 +31,8 @@ module.exports = function(app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
   );
+
+*/
   
   app.post(
     "/post/boards/:boardName/create",
@@ -91,25 +94,10 @@ app.get("/post/boards/:boardName",[authJwt.verifyToken], (req, res) =>{
   });
 });
 
-app.get("/editForm/boards/:boardName/:postId",[authJwt.verifyToken], controller.editPostForm)
-/*  const post = await Post.findAll({
-    where: {
-      id: req.params.postId
-    }
-  })
-  .catch(err => console.log(err));
-
-  await res.render("makepost", {
-    locals: {
-      domain: config.domainName,
-      boardName: req.params.boardName,
-      titleValue: post.title,
-      contentValue: post.content,
-      action: `${config.domainName}/boards/:boardName/:postId/edit` 
-    }
-  });*/
-//});
-
+app.get("/editForm/boards/:boardName/:postId",
+[authJwt.verifyToken],
+controller.editPostForm
+)
 
 app.post(
   "/boards/:boardName/:postId/delete", 

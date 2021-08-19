@@ -2,6 +2,11 @@ const db = require("../models");
 const {post: Post, comment: Comment, board: Board, user: User} = db;
 const config = require("../config/auth.config");
 const { Op } = require("sequelize");
+const buttons = {
+  signupOrUsername : `<a href="${config.domainName}/signup">Signup</a>`,
+  loginOrLogout : `<a href="${config.domainName}/signin">Login</a>`
+  }
+
 exports.allAccess = (req, res) => {
   res.status(200).send("Public Content.");
 };
@@ -44,7 +49,8 @@ exports.makeComment = (req, res) => {
 };
 
 exports.getPost = async (req, res) => {
-  const post = await Post.findOne({
+  try {
+   const post = await Post.findOne({
      where: {
        id: req.params.postId
      }
@@ -58,17 +64,17 @@ exports.getPost = async (req, res) => {
      include: User
    })
    .catch(err => console.log(err));
-
+  
    let deleteButton = '';
    let editLink = '';
    if (req.userId && req.userId == post.userId) {
      deleteButton = `
     <form id="delete" action="${config.domainName}/boards/${req.params.boardName}/${req.params.postId}/delete" method="post">
     <button id="delete" type="submit">Delete</button>
-    </form>  
+     </form> 
      `
      editLink =  `
-    <a href="${config.domainName}/editForm/boards/${req.params.boardName}/${req.params.postId}">Edit</a> 
+    <button><a href="${config.domainName}/editForm/boards/${req.params.boardName}/${req.params.postId}">Edit</a></button>
      `
    };
    
@@ -90,19 +96,32 @@ exports.getPost = async (req, res) => {
    `;
    const content = {
      title: post.title,
-     body: `<hr><b><a href="${config.domainName}/boards/${req.params.boardName}">${req.params.boardName}</a></b><span> - ${board.description}</span>
-     <hr><h3>${post.title}</h3><div>${editLink} ${deleteButton}</div><hr> ${postStr} <hr>${commentStr}<hr>`
+     body: `<hr><b><a href="${config.domainName}/boards/${req.params.boardName}">${req.params.boardName}</a></b></span> - ${board.description}</span>
+     <hr><b>${post.title}</b><div>${editLink}</div><div>${deleteButton}</div><hr> ${postStr} <hr>${commentStr}<hr>`
    }
    res.render('main', {
     locals: {
       title: config.domainName,
       body: content.body,
-      postid: post.id
+      postid: post.id,
+      signup: buttons.signupOrUsername,
+      login: buttons.loginOrLogout
     },
     partials: {
       form: '../partials/makecomment'
     }
-  })
+  })} catch (e) {
+    res.status(404);
+      res.render('main', {
+        locals: {
+          title: config.domainName,
+          body: `<h1>404 Nothing Here</h1>`,
+          form: '',
+          signup: '',
+          login: '' 
+        }
+      })
+    }
   };
 
   exports.getBoard = async (req,res) => {
@@ -112,8 +131,10 @@ exports.getPost = async (req, res) => {
     where: {
       name: boardName
     }
+  }).catch(err => {
+    res.status(404).send(err);
   })
-  // What if there is no post on that board?
+  try {
   Post.findAll({
     where: {
       boardId: board.id
@@ -143,11 +164,25 @@ exports.getPost = async (req, res) => {
         locals: {
           title: config.domainName,
           body: `<hr><h3>${content.title}</h3><h5>${board.description}<h5><hr><div>${content.body}</div>`,
-          form: ''
+          form: '',
+          signup: buttons.signupOrUsername,
+          login: buttons.loginOrLogout
         }
       })
     })
-    .catch(err => console.log(err))
+    .catch(error => res.send(error))
+  } catch (e) {
+    res.status(404);
+      res.render('main', {
+        locals: {
+          title: config.domainName,
+          body: `<h1>404 Nothing Here</h1>`,
+          form: '',
+          signup: '',
+          login: '' 
+        }
+      })
+  }
   };
 
   exports.getHome =  async (req, res) => {
@@ -176,7 +211,9 @@ exports.getPost = async (req, res) => {
     locals: {
       title: config.domainName,
       body: bodyStr,
-      form: ''
+      form: '',
+      signup: buttons.signupOrUsername,
+      login: buttons.loginOrLogout
     }
   });
 }
@@ -251,3 +288,21 @@ exports.errSignin =  (req, res) => {
     }
   })
   })};
+const checkUser =  async (userId) => {
+   const user = await User.findOne({
+      where: {
+        id: userId
+      }
+    }).catch(err => console.log(err))
+  if (userId) {
+   return {
+    signupOrUsername: user.username,
+    loginOrLogout: `<a href="${config.domainName}/logout">Logout</a>`
+  }
+} 
+  return {
+  signupOrUsername : `<a href="${config.domainName}/signup">Signup</a>`,
+  loginOrLogout : `<a href="${config.domainName}/signin">Login</a>`
+  }
+
+};
