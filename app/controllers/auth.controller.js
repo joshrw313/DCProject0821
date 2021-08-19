@@ -155,7 +155,7 @@ exports.googleSignIn = (req, res)=>{
         //res.cookie('jwt', {'token':token,'refreshToken':refreshToken});
         //config.signupOrUsername = `${user.username}`;
         //config.loginOrLogout = `<a href="${config.domainName}/logout">Logout</a>`;
-        res.cookie('jwt', {'token':token,'refreshToken':refreshToken, 'username': req.body.username}, {expires: new Date(Date.now()+(60*1000*60*60*2))});
+        res.cookie('jwt', {'token':token,'refreshToken':refreshToken, 'username': req.user.displayName}, {expires: new Date(Date.now()+(60*1000*60*60*2))});
         res.redirect(`${config.domainName}/`);
         
       })
