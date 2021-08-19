@@ -48,7 +48,6 @@ exports.signin = (req, res) => {
   .then(async (user) => {
       if (!user) {
         res.redirect(`${config.domainName}/nouser/signin`);
-        //return res.status(404).send({ message: "User Not found." });
       }
 
       const passwordIsValid = bcrypt.compareSync(
@@ -57,10 +56,6 @@ exports.signin = (req, res) => {
       );
 
       if (!passwordIsValid) {
-       /* return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!"
-        });*/
         res.redirect(`${config.domainName}/nopassphrase/signin`);
       }
 
@@ -77,7 +72,7 @@ exports.signin = (req, res) => {
         }
         config.signupOrUsername = `${user.username}`;
         config.loginOrLogout = `<a href="${config.domainName}/logout">Logout</a>`;
-        res.cookie('jwt', {'token':token,'refreshToken':refreshToken}, {expires: new Date(Date.now()+(60*1000*60*2))});
+        res.cookie('jwt', {'token':token,'refreshToken':refreshToken}, {expires: new Date(Date.now()+(60*1000*60*60*2))});
         res.redirect(`${config.domainName}/`);
       });
     })
@@ -128,13 +123,6 @@ exports.refreshToken = async (req, res) => {
 
 exports.googleSignIn = (req, res)=>{
     console.log('redirected', req.user)
-    /*let user = {
-        displayName: req.user.displayName,
-        name: req.user.name.givenName,
-        email: req.user._json.email,
-        provider: req.user.provider }
-    console.log(user)
-   */ 
   User.findOne({
     where: {
       username: req.user.displayName
@@ -167,9 +155,9 @@ exports.googleSignIn = (req, res)=>{
           refreshToken: refreshToken,
         });*/
         //res.cookie('jwt', {'token':token,'refreshToken':refreshToken});
-        config.signupOrUsername = `${user.username}`;
-        config.loginOrLogout = `<a href="${config.domainName}/logout">Logout</a>`;
-        res.cookie('jwt', {'token':token,'refreshToken':refreshToken}, {expires: new Date(Date.now()+(60*1000*60*2))});
+        //config.signupOrUsername = `${user.username}`;
+        //config.loginOrLogout = `<a href="${config.domainName}/logout">Logout</a>`;
+        res.cookie('jwt', {'token':token,'refreshToken':refreshToken}, {expires: new Date(Date.now()+(60*1000*60*60*2))});
         res.redirect(`${config.domainName}/`);
         
       })
