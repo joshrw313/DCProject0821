@@ -2,10 +2,6 @@ const db = require("../models");
 const {post: Post, comment: Comment, board: Board, user: User} = db;
 const config = require("../config/auth.config");
 const { Op } = require("sequelize");
-const buttons = {
-  signupOrUsername : `<a href="${config.domainName}/signup">Signup</a>`,
-  loginOrLogout : `<a href="${config.domainName}/signin">Login</a>`
-  }
 
 exports.allAccess = (req, res) => {
   res.status(200).send("Public Content.");
@@ -77,6 +73,20 @@ exports.getPost = async (req, res) => {
     <button><a href="${config.domainName}/editForm/boards/${req.params.boardName}/${req.params.postId}">Edit</a></button>
      `
    };
+ 
+  
+   if (req.userId) {
+    let user = await User.findOne({
+       where: {
+         id: req.userId
+       }
+     });
+     config.signupOrUsername = `${user.username}`;
+     config.loginOrLogout = `<a href="${config.domainName}/logout">Logout</a>`;
+   } else {
+      config.signupOrUsername = `<a href="${config.domainName}/signup">Signup</a>`
+      config.loginOrLogout = `<a href="${config.domainName}/signin">Login</a>`
+   };
    
 
    let commentStr = '';
@@ -104,8 +114,8 @@ exports.getPost = async (req, res) => {
       title: config.domainName,
       body: content.body,
       postid: post.id,
-      signup: buttons.signupOrUsername,
-      login: buttons.loginOrLogout
+      signup: config.signupOrUsername,
+      login: config.loginOrLogout
     },
     partials: {
       form: '../partials/makecomment'
@@ -134,6 +144,20 @@ exports.getPost = async (req, res) => {
   }).catch(err => {
     res.status(404).send(err);
   })
+
+/*   if (req.userId) {
+    let user = await User.findOne({
+       where: {
+         id: req.userId
+       }
+     });
+     config.signupOrUsername = `${user.username}`;
+     config.loginOrLogout = `<a href="${config.domainName}/logout">Logout</a>`;
+   } else {
+      config.signupOrUsername = `<a href="${config.domainName}/signup">Signup</a>`
+      config.loginOrLogout = `<a href="${config.domainName}/signin">Login</a>`
+   };*/
+
   try {
   Post.findAll({
     where: {
@@ -165,8 +189,8 @@ exports.getPost = async (req, res) => {
           title: config.domainName,
           body: `<hr><h3>${content.title}</h3><h5>${board.description}<h5><hr><div>${content.body}</div>`,
           form: '',
-          signup: buttons.signupOrUsername,
-          login: buttons.loginOrLogout
+          signup: config.signupOrUsername,
+          login: config.loginOrLogout
         }
       })
     })
@@ -212,8 +236,8 @@ exports.getPost = async (req, res) => {
       title: config.domainName,
       body: bodyStr,
       form: '',
-      signup: buttons.signupOrUsername,
-      login: buttons.loginOrLogout
+      signup: config.signupOrUsername,
+      login: config.loginOrLogout
     }
   });
 }

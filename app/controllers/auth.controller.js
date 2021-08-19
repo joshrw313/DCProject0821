@@ -1,7 +1,6 @@
 const db = require("../models");
 const config = require("../config/auth.config");
 const { user: User, role: Role, refreshToken: RefreshToken } = db;
-
 const Op = db.Sequelize.Op;
 
 const jwt = require("jsonwebtoken");
@@ -76,17 +75,9 @@ exports.signin = (req, res) => {
         for (let i = 0; i < roles.length; i++) {
           authorities.push("ROLE_" + roles[i].name.toUpperCase());
         }
-
-       /* res.send({
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          roles: authorities,
-          accessToken: token,
-          refreshToken: refreshToken,
-        });*/
-        //res.cookie('jwt', token);
-        res.cookie('jwt', {'token':token,'refreshToken':refreshToken});
+        config.signupOrUsername = `${user.username}`;
+        config.loginOrLogout = `<a href="${config.domainName}/logout">Logout</a>`;
+        res.cookie('jwt', {'token':token,'refreshToken':refreshToken}, {expires: new Date(Date.now()+(60*1000*60*2))});
         res.redirect(`${config.domainName}/`);
       });
     })
@@ -175,7 +166,10 @@ exports.googleSignIn = (req, res)=>{
           accessToken: token,
           refreshToken: refreshToken,
         });*/
-        res.cookie('jwt', {'token':token,'refreshToken':refreshToken});
+        //res.cookie('jwt', {'token':token,'refreshToken':refreshToken});
+        config.signupOrUsername = `${user.username}`;
+        config.loginOrLogout = `<a href="${config.domainName}/logout">Logout</a>`;
+        res.cookie('jwt', {'token':token,'refreshToken':refreshToken}, {expires: new Date(Date.now()+(60*1000*60*2))});
         res.redirect(`${config.domainName}/`);
         
       })
@@ -183,3 +177,10 @@ exports.googleSignIn = (req, res)=>{
       res.status(500).send({ message: err.message });
     });
 };
+
+exports.logout = (req, res) => {
+    res.cookie('jwt', {'token':'', 'refreshToken':''}, {expires: new Date(Date.now())});
+    config.signupOrUsername = `<a href="${config.domainName}/signup">Signup</a>`,
+    config.loginOrLogout = `<a href="${config.domainName}/signin">Login</a>`
+    res.redirect(`${config.domainName}`);
+}

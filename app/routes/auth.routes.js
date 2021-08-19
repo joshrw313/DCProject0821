@@ -49,4 +49,5 @@ passport.deserializeUser(function(obj, done) {
   app.post("/api/auth/refreshtoken", controller.refreshToken);
   app.get('/api/auth/google',  passport.authenticate('google', { scope: ['profile','email'] }));
   app.get('/api/auth/googleRedirect', passport.authenticate('google'), controller.googleSignIn);
+  app.get('/logout', controller.logout); 
 };
