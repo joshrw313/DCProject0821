@@ -70,8 +70,6 @@ exports.signin = (req, res) => {
         for (let i = 0; i < roles.length; i++) {
           authorities.push("ROLE_" + roles[i].name.toUpperCase());
         }
-        config.signupOrUsername = `${user.username}`;
-        config.loginOrLogout = `<a href="${config.domainName}/logout">Logout</a>`;
         res.cookie('jwt', {'token':token,'refreshToken':refreshToken}, {expires: new Date(Date.now()+(60*1000*60*60*2))});
         res.redirect(`${config.domainName}/`);
       });
@@ -168,7 +166,5 @@ exports.googleSignIn = (req, res)=>{
 
 exports.logout = (req, res) => {
     res.cookie('jwt', {'token':'', 'refreshToken':''}, {expires: new Date(Date.now())});
-    config.signupOrUsername = `<a href="${config.domainName}/signup">Signup</a>`,
-    config.loginOrLogout = `<a href="${config.domainName}/signin">Login</a>`
     res.redirect(`${config.domainName}`);
 }

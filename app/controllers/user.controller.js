@@ -145,19 +145,6 @@ exports.getPost = async (req, res) => {
     res.status(404).send(err);
   })
 
-/*   if (req.userId) {
-    let user = await User.findOne({
-       where: {
-         id: req.userId
-       }
-     });
-     config.signupOrUsername = `${user.username}`;
-     config.loginOrLogout = `<a href="${config.domainName}/logout">Logout</a>`;
-   } else {
-      config.signupOrUsername = `<a href="${config.domainName}/signup">Signup</a>`
-      config.loginOrLogout = `<a href="${config.domainName}/signin">Login</a>`
-   };*/
-
   try {
   Post.findAll({
     where: {
