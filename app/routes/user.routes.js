@@ -69,18 +69,19 @@ module.exports = function(app) {
   )
 
   app.get("/signup", (req, res) => {
-   res.render("signup");
-  });
-
-  app.get("/signin", (req, res) => {
-   res.render("signin",{
+   res.render("signup", {
      locals: {
-       message:'', 
-       domain:config.domainName 
+       title: 'signup'
+     },
+     partials: {
+       head: '../partials/head'
      }
    });
+  });
 
-});
+  app.get("/signin", 
+  controller.signin
+  )
 
 app.get("/post/boards/:boardName",[authJwt.verifyToken], (req, res) =>{
   res.render("makepost", {
@@ -89,7 +90,11 @@ app.get("/post/boards/:boardName",[authJwt.verifyToken], (req, res) =>{
       boardName: req.params.boardName,
       titleValue: 'Title',
       contentValue: 'Content',
-      action: `${config.domainName}/post/boards/${req.params.boardName}/create` 
+      action: `${config.domainName}/post/boards/${req.params.boardName}/create`,
+      title: 'Create Post' 
+    },
+    partials: {
+      head: '../partials/head'
     }
   });
 });

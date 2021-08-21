@@ -32,16 +32,16 @@ const post = await  Post.create({
     userId: req.userId,
     boardId: board.id
   });
-  res.redirect(`${config.domainName}/boards/${req.params.boardName}/${post.id}`);
+   await res.redirect(`${config.domainName}/boards/${req.params.boardName}/${post.id}`);
 }
 
-exports.makeComment = (req, res) => {
-  Comment.create({
+exports.makeComment = async (req, res) => {
+  await Comment.create({
     content: req.body.content,
     userId: req.userId,
     postId: req.params.postId
   });
-  res.redirect(`${config.domainName}/boards/${req.params.boardName}/${req.params.postId}`);
+  await res.redirect(`${config.domainName}/boards/${req.params.boardName}/${req.params.postId}`);
 };
 
 exports.getPost = async (req, res) => {
@@ -51,8 +51,8 @@ exports.getPost = async (req, res) => {
     loginOrLogout: config.loginOrLogout
   };
   if (req.cookies['jwt'] && req.cookies['jwt'].username) {
-    buttons.signupOrUsername = `${req.cookies['jwt'].username}`,
-    buttons.loginOrLogout = `<a href="/logout">Logout</a>`
+    buttons.signupOrUsername = `<a class="nav-link" href="#">${req.cookies['jwt'].username}</a>`,
+    buttons.loginOrLogout = `<a class="nav-link" href="/logout">Logout</a>`
   }
    const post = await Post.findOne({
      where: {
@@ -74,14 +74,14 @@ exports.getPost = async (req, res) => {
    if (req.userId && req.userId == post.userId) {
      deleteButton = `
     <form id="delete" action="${config.domainName}/boards/${req.params.boardName}/${req.params.postId}/delete" method="post">
-    <button id="delete" type="submit">Delete</button>
+    <button class="btn btn-link" id="delete" type="submit">Delete</button>
      </form> 
      `
      editLink =  `
-    <button><a href="${config.domainName}/editForm/boards/${req.params.boardName}/${req.params.postId}">Edit</a></button>
+    <button class="btn btn-link" ><a href="${config.domainName}/editForm/boards/${req.params.boardName}/${req.params.postId}">Edit</a></button>
      `
    };
-   let commentStr = '';
+   let commentStr = '<b>Comments</b>';
    comments.forEach(comment => {
    commentStr+=` 
       <div><p> ${comment.content} | ${comment.createdAt} | by: ${comment.user.username}</p></div>
@@ -99,7 +99,7 @@ exports.getPost = async (req, res) => {
    const content = {
      title: post.title,
      body: `<hr><b><a href="${config.domainName}/boards/${req.params.boardName}">${req.params.boardName}</a></b></span> - ${board.description}</span>
-     <hr><b>${post.title}</b><div>${editLink}</div><div>${deleteButton}</div><hr> ${postStr} <hr>${commentStr}<hr>`
+     <hr><nav class="navbar navbar-dark"><b>${post.title}</b><div>${editLink}</div><div>${deleteButton}</div></nav><hr> ${postStr} <hr>${commentStr}<hr>`
    }
    res.render('main', {
     locals: {
@@ -110,6 +110,7 @@ exports.getPost = async (req, res) => {
       login: buttons.loginOrLogout
     },
     partials: {
+      head: '../partials/head',
       form: '../partials/makecomment'
     }
   })} catch (e) {
@@ -121,6 +122,9 @@ exports.getPost = async (req, res) => {
           form: '',
           signup: '',
           login: '' 
+        },
+        partials: {
+          head: '../partials/head',
         }
       })
     }
@@ -132,8 +136,8 @@ exports.getPost = async (req, res) => {
     loginOrLogout: config.loginOrLogout
   };
   if (req.cookies['jwt'] && req.cookies['jwt'].username) {
-    buttons.signupOrUsername = `${req.cookies['jwt'].username}`,
-    buttons.loginOrLogout = `<a href="/logout">Logout</a>`
+    buttons.signupOrUsername = `<a class="nav-link" href="#">${req.cookies['jwt'].username}</a>`,
+    buttons.loginOrLogout = `<a class="nav-link" href="/logout">Logout</a>`
   }
   const {boardName} = req.params;
   let contentStr = '';
@@ -178,6 +182,9 @@ exports.getPost = async (req, res) => {
           form: '',
           signup: buttons.signupOrUsername,
           login: buttons.loginOrLogout
+        },
+        partials: {
+          head: '../partials/head'
         }
       })
     })
@@ -191,6 +198,9 @@ exports.getPost = async (req, res) => {
           form: '',
           signup: '',
           login: '' 
+        },
+        partials: {
+          head: '../partials/head'
         }
       })
   }
@@ -202,8 +212,8 @@ exports.getPost = async (req, res) => {
     loginOrLogout: config.loginOrLogout
   };
   if (req.cookies['jwt'] && req.cookies['jwt'].username) {
-    buttons.signupOrUsername = `${req.cookies['jwt'].username}`,
-    buttons.loginOrLogout = `<a href="/logout">Logout</a>`
+    buttons.signupOrUsername = `<a class="nav-link" href="#">${req.cookies['jwt'].username}</a>`,
+    buttons.loginOrLogout = `<a class="nav-link" href="/logout">Logout</a>`
   }
   let contentParagraph = `
   <div><p>  Hello and welcome to our backend project. I will allow the team to introduce
@@ -233,6 +243,9 @@ exports.getPost = async (req, res) => {
       form: '',
       signup: buttons.signupOrUsername,
       login: buttons.loginOrLogout
+    },
+    partials: {
+          head: '../partials/head'
     }
   });
 }
@@ -250,23 +263,14 @@ exports.errSignin =  (req, res) => {
     locals: {
       message:messageStr,
       domain:config.domainName 
+    },
+    partials: {
+          head: '../partials/head'
     }
   });
 }
   exports.deletePost = async (req, res) => {
-/*    let post = await Post.findAll({
-      where: {
-        id: req.params.postId
-      }
-    })
-    .catch(err => console.log(err));
-
-   if (req.userId == post.userId){
-     await post.destroy()
-     .catch(err => console.log(err));
-  }
-  */
-      Post.destroy({
+      await Post.destroy({
         where: {
           [Op.and]: [
             {id: req.params.postId},
@@ -275,7 +279,7 @@ exports.errSignin =  (req, res) => {
         }
       })
       .catch(err => console.log(err));
-      res.redirect(`${config.domainName}/boards/${req.params.boardName}`);
+      await res.redirect(`${config.domainName}/boards/${req.params.boardName}`);
 };
 
   exports.editPost = async (req, res) => {
@@ -287,7 +291,7 @@ exports.errSignin =  (req, res) => {
         id: req.params.postId
       }
     })
-    res.redirect(`${config.domainName}/boards/${req.params.boardName}/${req.params.postId}`);
+    await res.redirect(`${config.domainName}/boards/${req.params.boardName}/${req.params.postId}`);
   };
 
   exports.editPostForm = async (req, res) => {
@@ -303,25 +307,24 @@ exports.errSignin =  (req, res) => {
       boardName: req.params.boardName,
       titleValue: post.title,
       contentValue: post.content,
-      action: `${config.domainName}/boards/${req.params.boardName}/${req.params.postId}/edit` 
+      action: `${config.domainName}/boards/${req.params.boardName}/${req.params.postId}/edit`,
+      title: 'Edit Post' 
+    },
+    partials: {
+        head: '../partials/head'
     }
   })
   })};
-const checkUser =  async (userId) => {
-   const user = await User.findOne({
-      where: {
-        id: userId
-      }
-    }).catch(err => console.log(err))
-  if (userId) {
-   return {
-    signupOrUsername: user.username,
-    loginOrLogout: `<a href="${config.domainName}/logout">Logout</a>`
-  }
-} 
-  return {
-  signupOrUsername : `<a href="${config.domainName}/signup">Signup</a>`,
-  loginOrLogout : `<a href="${config.domainName}/signin">Login</a>`
-  }
 
-};
+  exports.signin = (req, res) => {
+   res.render("signin",{
+     locals: {
+       message:'', 
+       domain:config.domainName,
+       title: 'signin'
+     },
+     partials: {
+       head: '../partials/head'
+     }
+    })
+  }
