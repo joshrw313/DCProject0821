@@ -262,7 +262,8 @@ exports.errSignin =  (req, res) => {
   res.render("signin",{
     locals: {
       message:messageStr,
-      domain:config.domainName 
+      domain:config.domainName,
+      title: 'signin' 
     },
     partials: {
           head: '../partials/head'
