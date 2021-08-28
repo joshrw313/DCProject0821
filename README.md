@@ -59,8 +59,6 @@ A simple express.js application with html frontend to be viewed in a browser. Al
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 ### Built With
 
 * [Express](https://expressjs.com/)
