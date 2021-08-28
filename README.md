@@ -20,7 +20,7 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-
+<h1>Express Boards</h1>
 
    Backend project for Digital Crafts Full Stack Flex Week 16
 
@@ -48,7 +48,6 @@ A simple express.js application with html frontend to be viewed in a browser. Al
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgements">Acknowledgements</a></li>
   </ol>
