@@ -20,25 +20,8 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
-
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-  <a href="https://github.com/joshrw313/DCProject0821">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
-  <h3 align="center">Express Boards</h3>
-
-  <p align="center">
    Backend project for Digital Crafts Full Stack Flex Week 16
 
 A simple express.js application with html frontend to be viewed in a browser. Allows simple CRUD operations on a SQL database. Users can create an account or sign in with Google Oauth20 via passport.js. There are topic boards where users can create and read posts. Users can also leave comments on posts. 
@@ -77,11 +60,6 @@ A simple express.js application with html frontend to be viewed in a browser. Al
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`joshrw313`, `DCProject0821`, `twitter_handle`, `email`, `Express Boards`, `project_description`
-
 
 ### Built With
 
@@ -128,8 +106,6 @@ This is an example of how to list things you need to use the software and how to
 5. Create google.Oauth.js to contain your Oauth Credentials 
    ```sh
    PREFEREDTEXTEDITOR app/config/google.Oauth.js 
-   ```
-   ```js
   const googleKey = {
 	  clientId: "YOURCLIENTID",
 	  clientSecret: "YOURCLIENTSECRET",
@@ -164,6 +140,7 @@ Wigensky Altidor - https://github.com/waltidor-06
 
 * [BezKoder](https://www.bezkoder.com/node-js-jwt-authentication-postgresql/)
 * [DigitalCrafts](https://www.digitalcrafts.com/)
+* [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
 
 
 
