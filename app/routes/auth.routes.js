@@ -2,14 +2,15 @@ const { verifySignUp } = require("../middleware");
 const controller = require("../controllers/auth.controller");
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const googleKey = require("../config/google.Oauth");
 
 module.exports = function(app) {
 // const googleKey = require("../config/google.Oauth");
 
 passport.use(new GoogleStrategy({
-	  clientID: "googleKey.clientId", 
-	  clientSecret: "googleKey.clientSecret", 
-    callbackURL: "https://dcproject0821.xyz/api/auth/googleRedirect"
+	  clientID: googleKey.clientId, 
+	  clientSecret: googleKey.clientSecret, 
+    callbackURL: googleKey.callbackURL 
   },
   function(accessToken, refreshToken, profile, done) {
       //console.log(accessToken, refreshToken, profile)
