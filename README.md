@@ -106,13 +106,6 @@ This is an example of how to list things you need to use the software and how to
 5. Create google.Oauth.js to contain your Oauth Credentials 
    ```sh
    PREFEREDTEXTEDITOR app/config/google.Oauth.js 
-  const googleKey = {
-	  clientId: "YOURCLIENTID",
-	  clientSecret: "YOURCLIENTSECRET",
-	  callbackURL: "YOURCALLBACKURL" 
-  };
-
-  module.exports = googleKey;
    ```
 6. Deploy with the webserver of your choice
 ```sh
